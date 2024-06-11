@@ -1,9 +1,13 @@
 package org.example.springserverlocal;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.querydsl.core.annotations.PropertyType;
+import com.querydsl.core.annotations.QueryEntity;
+import com.querydsl.core.annotations.QueryType;
 import jakarta.persistence.*;
 
 @Entity
+@QueryEntity
 @Table(name = "birds")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 

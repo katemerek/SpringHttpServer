@@ -1,7 +1,8 @@
 package org.example.springserverlocal;
-import org.example.springserverlocal.BirdsRepository;
+import com.querydsl.core.types.Predicate;
 
 
+import java.awt.print.Pageable;
 import java.util.List;
 
 public interface BirdService {
@@ -16,7 +17,12 @@ public interface BirdService {
          * Возвращает список всех имеющихся клиентов
          * @return список птичек
          */
-        List<Bird> readAll();
+
+        //ищем по возрасту, включая границы
+
+////        List<Bird> readAll();
+//        List<Bird> findAll(Predicate predicate, Pageable pageable);
+
         /**
          * Возвращает птичку по еe ID
          * @param id - ID птички
