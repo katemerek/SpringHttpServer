@@ -1,19 +1,33 @@
 package org.example.springserverlocal;
+import com.querydsl.core.annotations.QueryType;
+import com.querydsl.core.types.Predicate;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.NumberExpression;
+import lombok.RequiredArgsConstructor;
 import org.example.springserverlocal.BirdsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.print.Pageable;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static javax.management.Query.and;
 
 
 @RestController
 public class DB_controller {
     private final BirdService birdService;
+    private final BirdsRepository birdsRepository;
     @Autowired
-    public DB_controller(BirdService birdService) {
+    public DB_controller(BirdService birdService, BirdsRepository birdsRepository) {
         this.birdService = birdService;
+        this.birdsRepository = birdsRepository;
     }
 
     @PostMapping(value = "/birds")
@@ -22,13 +36,20 @@ public class DB_controller {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
     @GetMapping(value = "/birds")
-    public ResponseEntity<List<Bird>> read() {
-        final List<Bird> birds = birdService.readAll();
-
-        return birds != null &&  !birds.isEmpty()
-                ? new ResponseEntity<>(birds, HttpStatus.OK)
-                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity getFiltered(
+            @QuerydslPredicate(root = Bird.class, bindings = BirdsRepository.class) Predicate predicate) {
+        // time.sleep(10)
+        return ResponseEntity.ok(birdsRepository.findAll (predicate));
     }
+
+//    @GetMapping(value = "/birds")
+//    public ResponseEntity<List<Bird>> read() {
+//        final List<Bird> birds = birdService.readAll();
+//
+//        return birds != null &&  !birds.isEmpty()
+//                ? new ResponseEntity<>(birds, HttpStatus.OK)
+//                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//    }
     @GetMapping(value = "/birds/{id}")
     public ResponseEntity<Bird> read(@PathVariable(name = "id") int id) {
         final Bird bird = birdService.read(id);
@@ -55,34 +76,4 @@ public class DB_controller {
                 : new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
     }
 }
-//@RequestMapping("/ptichki")//УРЛ должен быть таким чтоб исполнялась программа
-//public class DB_controller {
-//    private final String sharedKey = "SHARED_KEY";
-//    private static final String SUCCESS_STATUS = "success";
-//    private static final String ERROR_STATUS = "error";
-//    private static final int CODE_SUCCESS = 100;
-//    private static final int AUTH_FAILURE = 102;
-//
-//@GetMapping
-//public BaseResponse showStatus() {
-//    return new BaseResponse(SUCCESS_STATUS, 1);
-//}
-//    @PostMapping("/addbird")
-//    public BaseResponse addbird(@RequestParam(value = "key") String key, @RequestBody Bird request) {
-//
-//        final BaseResponse response;
-//
-//        if (sharedKey.equalsIgnoreCase(key)) {
-//            int id = request.getId();
-//            String name = request.getName();
-//            String tree = request.getTree();
-//            int population = request.getPopulation();
-//            // Process the request
-//            // ....
-//            // Return success response to the client.
-//            response = new BaseResponse(SUCCESS_STATUS, CODE_SUCCESS);
-//        } else {
-//            response = new BaseResponse(ERROR_STATUS, AUTH_FAILURE);
-//        }
-//        return response;
-//    }
+

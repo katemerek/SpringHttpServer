@@ -1,7 +1,9 @@
 package org.example.springserverlocal;
 
+import com.querydsl.core.types.Predicate;
 import org.springframework.stereotype.Service;
 
+import java.awt.print.Pageable;
 import java.util.List;
 
 @Service
@@ -17,10 +19,10 @@ public class BirdServiceImpl implements BirdService {
         birdsRepository.save(bird);
     }
 
-    @Override
-    public List<Bird> readAll() {
-        return birdsRepository.findAll();
-    }
+//    @Override
+//    public List<Bird> readAll() {
+//        return birdsRepository.findAll();
+//    }
 
     @Override
     public Bird read(int id) {
